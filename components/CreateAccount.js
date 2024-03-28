@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  TextInput,
+} from "react-native";
 
-const CreateAccountScreen: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+const CreateAccountScreen = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleCreateAccount = () => {
-    console.log('Create Account button pressed.');
+    console.log("Create Account button pressed.");
   };
 
   return (
     <View style={styles.view1}>
-      <Text style={styles.titleText}>Create Account</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -29,8 +34,11 @@ const CreateAccountScreen: React.FC = () => {
           placeholder="Password"
         />
       </View>
-      
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleCreateAccount}>
+
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={handleCreateAccount}
+      >
         <Text style={styles.text}>Create Account</Text>
       </TouchableOpacity>
     </View>
@@ -39,27 +47,21 @@ const CreateAccountScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   view1: {
-    backgroundColor: '#FFF',
-    display: 'flex',
+    backgroundColor: "#FFF",
+    display: "flex",
     maxWidth: 480,
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    margin: 'auto',
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "stretch",
+    margin: "auto",
     padding: 10,
-  },
-  titleText: {
-    fontFamily: 'sans-serif',
-    marginBottom: 10,
-    fontSize: 20,
-    textAlign: 'center',
   },
   buttonContainer: {
     marginTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 30,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor: "rgba(0, 0, 0, 0.1)",
     borderWidth: 1,
     padding: 10,
   },
@@ -68,13 +70,13 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    borderColor: "rgba(0, 0, 0, 0.1)",
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
   },
   text: {
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: "Inter, sans-serif",
   },
 });
 
