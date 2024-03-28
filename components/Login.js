@@ -35,6 +35,7 @@ const LoginScreen = () => {
       "Login Attempt",
       `Username: ${username}, Password: ${password}`
     );
+    navigation.navigate("Home");
   };
 
   const navigateToCreateAccount = () => {
