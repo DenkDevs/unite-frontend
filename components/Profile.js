@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   userName: {
     marginTop: 30,
     fontSize: 36,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
   sectionTitle: {
     textAlign: "center",
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     marginTop: 17,
     width: 285,
     padding: 10,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
     fontSize: 15,
     textAlign: "center",
   },

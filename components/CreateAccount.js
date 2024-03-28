@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
 });
 

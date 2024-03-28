@@ -6,13 +6,14 @@ import HomeScreen from "./components/Home";
 import ProfileScreen from "./components/Profile";
 import StatisticsScreen from "./components/Statistics";
 import ScheduleScreen from "./components/Schedule";
+import EventScreen from "./components/Event";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Schedule">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
@@ -21,6 +22,7 @@ export default function App() {
         <Stack.Screen name="Calendar" component={CalendarScreen} /> */}
         <Stack.Screen name="Statistics" component={StatisticsScreen} />
         <Stack.Screen name="Schedule" component={ScheduleScreen} />
+        <Stack.Screen name="Event" component={EventScreen} />
         {/*<Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>

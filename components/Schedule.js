@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 29,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
   privacyIcon: {
     flexDirection: "row",
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   privacyText: {
     fontSize: 14,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
   bannerImage: {
     width: "100%",

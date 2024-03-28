@@ -84,10 +84,10 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 50,
     fontSize: 50,
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
   inputField: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
     alignSelf: "stretch",
     borderRadius: 30,
     borderColor: "rgba(0, 0, 0, 1)",
@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFF",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
   signupText: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
     marginBottom: 10,
   },
   createAccountText: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
     fontWeight: "700",
   },
 });
