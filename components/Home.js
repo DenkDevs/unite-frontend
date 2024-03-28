@@ -52,7 +52,10 @@ const HomeScreen = () => {
     try {
       const eventsCollectionRef = collection(FIREBASE_DB, "events");
       const snapshot = await getDocs(eventsCollectionRef);
-      const eventData = snapshot.docs.map((doc) => doc.data());
+      const eventData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       console.log(eventData);
       setEvents(eventData);
     } catch (error) {
@@ -61,9 +64,9 @@ const HomeScreen = () => {
     }
   };
 
-  const navigateToEvent = (eventKey) => {
+  const navigateToEvent = (eventId) => {
     // Navigate to event details page, passing the event key as a parameter
-    navigation.navigate("Event", { eventKey });
+    navigation.navigate("Event", { eventId });
   };
 
   return (
@@ -88,13 +91,13 @@ const HomeScreen = () => {
             // If eventData is not empty, map through it and render EventCard components
             eventData.map((event, index) => (
               <EventCard
-                key={index}
+                key={event.id}
                 title={event.title}
                 clubName={event.clubName}
                 time={event.time}
                 location={event.location}
                 description={event.description}
-                onPress={() => navigateToEvent(index)}
+                onPress={() => navigateToEvent(event.id)}
               />
             ))
           ) : (

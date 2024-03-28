@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, Text, Button } from "react-native";
+import NavBar from "./NavBar";
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../FirebaseConfig";
 
 const EventDetails = ({ date, location }) => (
   <View style={styles.detailsContainer}>
@@ -9,18 +12,39 @@ const EventDetails = ({ date, location }) => (
   </View>
 );
 
-const EventScreen = () => {
+const EventScreen = ({ navigation, route }) => {
+  const [eventDetails, setEventDetails] = useState(null);
+  const { eventId } = route.params;
+
+  useEffect(() => {
+    fetchEventDetails();
+  }, []);
+
+  const fetchEventDetails = async () => {
+    try {
+      const eventDocRef = doc(FIREBASE_DB, "events", eventId.toString());
+      const eventDocSnap = await getDoc(eventDocRef);
+      if (eventDocSnap.exists()) {
+        const eventData = eventDocSnap.data();
+        setEventDetails(eventData);
+      } else {
+        console.error("Event not found");
+      }
+    } catch (error) {
+      console.error("Error fetching event details:", error);
+    }
+  };
+
+  const handleRSVP = () => {
+    // Handle RSVP logic here
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.contentContainer}>
-        <Image
-          resizeMode="contain"
-          source={{ uri: "imageUri1" }}
-          style={styles.eventImage}
-        />
         <View style={styles.eventTitleContainer}>
           <Text style={styles.eventTitleText}>
-            Valentine’s Day Soldering Workshop
+            {eventDetails ? eventDetails.title : "Loading..."}
           </Text>
         </View>
         <View style={styles.graphicContainer}>
@@ -43,17 +67,12 @@ const EventScreen = () => {
           </View>
         </View>
         <EventDetails
-          date="Wednesday, February 14, 6:30 PM - 8:30 PM"
-          location="Interdisciplinary Design Commons, 777 Atlantic Dr NW, Atlanta, GA"
+          date={eventDetails ? eventDetails.time : "Loading..."}
+          location={eventDetails ? eventDetails.location : "Loading..."}
         />
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
-            Learn how to solder your very own Valentine's Day Heart! {"\n"}
-            The event is limited to the first 20 sign-ups. {"\n"}
-            Please fill out the RSVP form to secure your spot. If you can no
-            longer make the event, please update and cancel your RSVP. If you
-            are placed on the waitlist, you will be automatically promoted to
-            the confirmed attending list if and when a spot opens up.
+            {eventDetails ? eventDetails.description : "Loading..."}
           </Text>
         </View>
         <View style={styles.rsvpContainer}>
@@ -64,11 +83,7 @@ const EventScreen = () => {
           />
         </View>
       </View>
-      <Image
-        resizeMode="contain"
-        source={{ uri: "imageUri4" }}
-        style={styles.footerImage}
-      />
+      <NavBar />
     </View>
   );
 };
@@ -78,10 +93,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     alignItems: "center",
     maxWidth: 480,
-    paddingTop: 25,
     width: "100%",
     flexDirection: "column",
     marginHorizontal: "auto",
+    flex: 1,
+    justifyContent: "space-between",
   },
   contentContainer: {
     paddingHorizontal: 49,
@@ -92,7 +108,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   eventTitleContainer: {
-    marginTop: 10,
     alignItems: "center",
   },
   eventTitleText: {
@@ -101,9 +116,9 @@ const styles = StyleSheet.create({
   },
   graphicContainer: {
     backgroundColor: "#D9D9D9",
-    marginTop: 5,
+    marginTop: 10,
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 120,
   },
   graphicText: {
     fontSize: 12,
@@ -111,7 +126,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 11,
+    marginTop: 20,
     paddingHorizontal: 0,
   },
   buttonContainer: {
@@ -119,26 +134,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   detailsContainer: {
-    marginTop: 17,
+    marginTop: 30,
   },
   detailsText: {
     fontSize: 14,
   },
   descriptionContainer: {
-    marginTop: 30,
+    marginTop: 20,
   },
   descriptionText: {
     fontSize: 12,
   },
   rsvpContainer: {
-    marginTop: 50,
+    marginTop: 40,
     backgroundColor: "#D9D9D9",
     padding: 10,
-  },
-  footerImage: {
-    height: 60,
-    width: "100%",
-    marginTop: 49,
   },
 });
 
