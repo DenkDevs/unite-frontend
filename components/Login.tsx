@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-//import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 interface InputProps {
   placeholder: string;
@@ -31,16 +31,16 @@ const Button: React.FC<ButtonProps> = ({ label, onPress }) => (
 const LoginScreen: React.FC = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  //const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const handleLogin = () => {
     // Ideally, you would validate the credentials here or send them to your backend for validation
-    Alert.alert('Login Attempt', `Username: ${username}, Password: ${password}`);
+    console.log('Login Attempt', `Username: ${username}, Password: ${password}`);
   };
 
-//   const navigateToCreateAccount = () => {
-//     navigation.navigate('CreateAccount');
-//   };
+  const navigateToCreateAccount = () => {
+    navigation.navigate("CreateAccount" as never);
+  };
 
   return (
     <View style={styles.container}>
@@ -49,8 +49,7 @@ const LoginScreen: React.FC = () => {
       <InputField placeholder="Password" secureTextEntry={true} onChangeText={setPassword} />
       <Button label="Login" onPress={handleLogin} />
       <Text style={styles.signupText}>Don’t have an account yet?</Text>
-      <TouchableOpacity>
-      {/* <TouchableOpacity onPress={navigateToCreateAccount}> */}
+      <TouchableOpacity onPress={navigateToCreateAccount}>
         <Text style={styles.createAccountText}>Create Account</Text>
       </TouchableOpacity>
     </View>
