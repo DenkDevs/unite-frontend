@@ -6,13 +6,15 @@ import {
   Text,
   TextInput,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const CreateAccountScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const navigation = useNavigation();
 
   const handleCreateAccount = () => {
-    console.log("Create Account button pressed.");
+    navigation.navigate("Home");
   };
 
   return (
