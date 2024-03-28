@@ -1,20 +1,43 @@
 import React, { useState } from "react";
+
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Text,
   TextInput,
+  Alert,
 } from "react-native";
+import { FIREBASE_AUTH } from "../FirebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
 const CreateAccountScreen = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const auth = FIREBASE_AUTH;
   const navigation = useNavigation();
 
-  const handleCreateAccount = () => {
-    navigation.navigate("Home");
+  const handleCreateAccount = async () => {
+    // TODO Ideally, you would validate the credentials here or send them to your backend for validation
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      // Signed in
+      const user = userCredential.user;
+      Alert.alert("Account Created", `Welcome, ${user?.email}`);
+      navigation.navigate("Home");
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert(
+        "Account Creation Error",
+        `Error: ${errorCode} - ${errorMessage}`
+      );
+    }
   };
 
   return (

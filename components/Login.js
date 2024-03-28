@@ -8,6 +8,8 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { FIREBASE_AUTH } from "../FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const InputField = ({ placeholder, secureTextEntry = false, onChangeText }) => (
   <TextInput
@@ -28,14 +30,25 @@ const LoginScreen = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const navigation = useNavigation();
+  const auth = FIREBASE_AUTH;
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Ideally, you would validate the credentials here or send them to your backend for validation
-    console.log(
-      "Login Attempt",
-      `Username: ${username}, Password: ${password}`
-    );
-    navigation.navigate("Home");
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
+      // Signed in
+      const user = userCredential.user;
+      Alert.alert("Login Success", `Welcome, ${user?.email}`);
+      navigation.navigate("Home");
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      Alert.alert("Login Error", `Error: ${errorCode} - ${errorMessage}`);
+    }
   };
 
   const navigateToCreateAccount = () => {
