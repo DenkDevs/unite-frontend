@@ -40,7 +40,7 @@ const CourseList = () => {
 
 	useEffect(() => {
 		axios
-			.get("http://128.61.124.204:3333/courses")
+			.get("http://172.16.40.13:3333/courses") // NOTE Until we host the backend, use the IP address you are on
 			.then((response) => setCourses(response.data))
 			.catch((error) => console.error(error));
 	}, []);
@@ -68,7 +68,7 @@ const CourseList = () => {
 				style={styles.input}
 				value={searchText}
 				onChangeText={setSearchText}
-				placeholder="Search for a course"
+				placeholder="Search and select course to add"
 			/>
 			<ScrollView style={styles.scroll}>
 				{searchText.length > 0 &&

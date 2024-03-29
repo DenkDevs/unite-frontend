@@ -11,7 +11,8 @@ import {
 import { FIREBASE_AUTH, FIREBASE_DB } from "../FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { PostHogProvider, usePostHog } from "posthog-react-native";
 
 // TODO Add validation for email to only GT email addresses
 const CreateAccountScreen = () => {
@@ -19,6 +20,7 @@ const CreateAccountScreen = () => {
 	const [password, setPassword] = React.useState("");
 	const [fname, setFname] = React.useState("");
 	const [lname, setLname] = React.useState("");
+	const posthog = usePostHog();
 
 	const auth = FIREBASE_AUTH;
 	const navigation = useNavigation();
@@ -37,12 +39,27 @@ const CreateAccountScreen = () => {
 				courses: [],
 				organizations: [],
 				hasLoggedInBefore: false,
-				rsvps: 0
+				rsvps: 0,
 			});
 
 			const user = userCredential.user;
 			Alert.alert("Account Created", `Welcome, ${user?.email}`);
-			navigation.navigate("Home");
+			// Get the user document from Firestore
+			const userDocRef = doc(FIREBASE_DB, "users", user.uid);
+			const userDoc = await getDoc(userDocRef);
+
+			if (userDoc.exists()) {
+				const userData = userDoc.data();
+
+				if (userData.hasLoggedInBefore === false) {
+					navigation.navigate("CourseList");
+				} else {
+					navigation.navigate("Home");
+				}
+			} else {
+				console.log("No such user!");
+			}
+			posthog.capture("user_signed_up");
 		} catch (error) {
 			const errorCode = error.code;
 			const errorMessage = error.message;
@@ -92,7 +109,7 @@ const CreateAccountScreen = () => {
 			<TouchableOpacity
 				style={styles.buttonContainer}
 				onPress={handleCreateAccount}>
-				<Text style={styles.text}>Create Account</Text>
+				<Text>Create Account</Text>
 			</TouchableOpacity>
 		</View>
 	);
@@ -127,9 +144,6 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 5,
 		padding: 10,
-	},
-	text: {
-		fontFamily: "sans-serif",
 	},
 });
 

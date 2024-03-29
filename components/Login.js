@@ -8,8 +8,9 @@ import {
 	Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { FIREBASE_AUTH } from "../FirebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const InputField = ({ placeholder, secureTextEntry = false, onChangeText }) => (
 	<TextInput
@@ -45,14 +46,20 @@ const LoginScreen = () => {
 			const user = userCredential.user;
 			Alert.alert("Login Success", `Welcome, ${user?.email}`);
 
-			if (user.hasLoggedInBefore === false) {
-				{
+			// Get the user document from Firestore
+			const userDocRef = doc(FIREBASE_DB, "users", user.uid);
+			const userDoc = await getDoc(userDocRef);
+
+			if (userDoc.exists()) {
+				const userData = userDoc.data();
+
+				if (userData.hasLoggedInBefore === false) {
 					navigation.navigate("CourseList");
-				}
-			} else {
-				{
+				} else {
 					navigation.navigate("Home");
 				}
+			} else {
+				console.log("No such user!");
 			}
 		} catch (error) {
 			const errorCode = error.code;
@@ -63,7 +70,6 @@ const LoginScreen = () => {
 
 	const navigateToCreateAccount = () => {
 		navigation.navigate("CreateAccount");
-		// navigation.navigate("CreateAccount");
 	};
 
 	return (
@@ -95,10 +101,8 @@ const styles = StyleSheet.create({
 	title: {
 		marginBottom: 50,
 		fontSize: 50,
-		fontFamily: "sans-serif",
 	},
 	inputField: {
-		fontFamily: "sans-serif",
 		alignSelf: "stretch",
 		borderRadius: 30,
 		borderColor: "rgba(0, 0, 0, 1)",
@@ -117,14 +121,11 @@ const styles = StyleSheet.create({
 	},
 	buttonText: {
 		color: "#FFF",
-		fontFamily: "sans-serif",
 	},
 	signupText: {
-		fontFamily: "sans-serif",
 		marginBottom: 10,
 	},
 	createAccountText: {
-		fontFamily: "sans-serif",
 		fontWeight: "700",
 	},
 });

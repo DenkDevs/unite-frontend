@@ -10,6 +10,7 @@ import NavBar from "./NavBar";
 import { FIREBASE_DB } from "../FirebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { PostHogProvider, usePostHog } from "posthog-react-native";
 
 const EventCard = ({
 	title,
@@ -42,6 +43,7 @@ const EventCard = ({
 const HomeScreen = () => {
 	const [eventData, setEvents] = useState([]);
 	const navigation = useNavigation();
+	const posthog = usePostHog();
 
 	useEffect(() => {
 		// Fetch events from your database when the component mounts
@@ -67,6 +69,7 @@ const HomeScreen = () => {
 	const navigateToEvent = (eventId) => {
 		// Navigate to event details page, passing the event key as a parameter
 		navigation.navigate("Event", { eventId });
+		posthog.capture("user_looked_at_event", { eventId });
 	};
 
 	return (

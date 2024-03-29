@@ -11,25 +11,32 @@ import ScheduleScreen from "./components/Schedule";
 import EventScreen from "./components/Event";
 import CourseList from "./components/CourseList";
 import MessagesScreen from "./components/Messages";
+import { PostHogProvider } from "posthog-react-native";
 
 const Stack = createStackNavigator();
 
 export default function App() {
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Login">
-				<Stack.Screen name="Login" component={LoginScreen} />
-				<Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-				<Stack.Screen name="CourseList" component={CourseList} />
-				<Stack.Screen name="Home" component={HomeScreen} />
-				<Stack.Screen name="Profile" component={ProfileScreen} />
-				<Stack.Screen name="Messages" component={MessagesScreen} />
-				{/* <Stack.Screen name="Calendar" component={CalendarScreen} /> */}
-				<Stack.Screen name="Statistics" component={StatisticsScreen} />
-				<Stack.Screen name="Schedule" component={ScheduleScreen} />
-				<Stack.Screen name="Event" component={EventScreen} />
-				{/*<Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
-			</Stack.Navigator>
+			<PostHogProvider
+				apiKey="phc_xRrOygZfl72Ev1xjTlUiFncCYHeji8dPIxsfmq1YlWj"
+				options={{
+					host: "https://app.posthog.com",
+				}}>
+				<Stack.Navigator initialRouteName="Login">
+					<Stack.Screen name="Login" component={LoginScreen} />
+					<Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+					<Stack.Screen name="CourseList" component={CourseList} />
+					<Stack.Screen name="Home" component={HomeScreen} />
+					<Stack.Screen name="Profile" component={ProfileScreen} />
+					<Stack.Screen name="Messages" component={MessagesScreen} />
+					{/* <Stack.Screen name="Calendar" component={CalendarScreen} /> */}
+					<Stack.Screen name="Statistics" component={StatisticsScreen} />
+					<Stack.Screen name="Schedule" component={ScheduleScreen} />
+					<Stack.Screen name="Event" component={EventScreen} />
+					{/*<Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
+				</Stack.Navigator>
+			</PostHogProvider>
 		</NavigationContainer>
 	);
 }

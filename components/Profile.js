@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
 import { View, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
 import NavBar from "./NavBar";
+import React, { useState, useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../FirebaseConfig";
 
 const Tag = ({ text, style }) => (
 	<View style={[styles.tagView, style]}>
@@ -18,6 +20,25 @@ const InterestSection = ({ interests }) => (
 );
 
 const ProfileScreen = () => {
+	const [user, setUser] = useState(null);
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			const currentUser = FIREBASE_AUTH.currentUser;
+			if (currentUser) {
+				const userDocRef = doc(FIREBASE_DB, "users", currentUser.uid);
+				const userDoc = await getDoc(userDocRef);
+				if (userDoc.exists()) {
+					setUser(userDoc.data());
+				} else {
+					console.log("No such user!");
+				}
+			}
+		};
+
+		fetchUser();
+	}, []);
+
 	const userInterests = [
 		{ text: "🎓 4th year", style: styles.yellowTag },
 		{ text: "💻 Computer Science", style: styles.yellowTag },
@@ -50,7 +71,9 @@ const ProfileScreen = () => {
 				/>
 			</View>
 			<View style={styles.avatarPlaceholder} />
-			<Text style={styles.userName}>John D.</Text>
+			<Text style={styles.userName}>
+				{user ? `${user.fname} ${user.lname}` : "Loading..."}
+			</Text>
 			<Text style={styles.sectionTitle}>My Interests</Text>
 			<InterestSection interests={userInterests} />
 			<Text style={styles.sectionTitle}>My Classes</Text>
@@ -106,7 +129,6 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		fontWeight: "700",
 		marginTop: 30,
-		fontFamily: "Roboto, sans-serif",
 	},
 	sectionContainer: {
 		marginTop: 9,
