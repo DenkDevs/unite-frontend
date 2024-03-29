@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, Text, Button } from "react-native";
+import { View, StyleSheet, Alert, Text, Button } from "react-native";
 import NavBar from "./NavBar";
-import { doc, getDoc } from "firebase/firestore";
-import { FIREBASE_DB } from "../FirebaseConfig";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../FirebaseConfig";
 
 const EventDetails = ({ date, location }) => (
   <View style={styles.detailsContainer}>
@@ -14,6 +14,7 @@ const EventDetails = ({ date, location }) => (
 
 const EventScreen = ({ navigation, route }) => {
   const [eventDetails, setEventDetails] = useState(null);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
   const { eventId } = route.params;
 
   useEffect(() => {
@@ -35,8 +36,34 @@ const EventScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleRSVP = () => {
-    // Handle RSVP logic here
+  const handleRSVP = async () => {
+    const currentUser = FIREBASE_AUTH.currentUser;
+    if (currentUser) {
+      const userId = currentUser.uid;
+      try {
+        const userDocRef = doc(FIREBASE_DB, "users", userId);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const rsvpEvents = userData.rsvpEvents || []; // get the rsvpEvents array, if it doesn't exist, initialize it as an empty array
+          if (rsvpEvents.includes(eventId)) { // check if the eventId already exists in the array
+            Alert.alert("You have already RSVP'd to this event"); // display an alert
+            return; // if it does, return early to prevent the RSVP count from being incremented and the eventId from being added to the array again
+          }
+          const rsvpData = userData.rsvps + 1;
+          rsvpEvents.push(eventId); // add the new eventId to the array
+          await updateDoc(userDocRef, { rsvps: rsvpData, rsvpEvents: rsvpEvents }); // update the document with the new rsvps count and rsvpEvents array
+        } else {
+          console.log("No such user!");
+        }
+      } catch (error) {
+        console.error("Error fetching data from Firestore:", error);
+        return [];
+      }
+    } else {
+      console.log("No user is logged in");
+    }
+    setIsButtonClicked(true);
   };
 
   return (
@@ -77,7 +104,9 @@ const EventScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.rsvpContainer}>
           <Button
-            onPress={() => console.log("RSVP Button Clicked")}
+            onPress={() => {
+              handleRSVP();
+              console.log("RSVP Button Clicked")}}
             title="RSVP HERE!"
             color="#000"
           />
