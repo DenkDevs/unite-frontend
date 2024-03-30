@@ -40,7 +40,7 @@ const CourseList = () => {
 
 	useEffect(() => {
 		axios
-			.get("http://172.16.40.13:3333/courses") // NOTE Until we host the backend, use the IP address you are on
+			.get("https://us-central1-unite-fdcb6.cloudfunctions.net/api/courses")
 			.then((response) => setCourses(response.data))
 			.catch((error) => console.error(error));
 	}, []);
