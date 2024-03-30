@@ -21,40 +21,37 @@ const InterestSection = ({ interests }) => (
 
 const ProfileScreen = () => {
 	const [user, setUser] = useState(null);
+	const [courses, setCourses] = useState([]);
 
 	useEffect(() => {
 		const fetchUser = async () => {
 			const currentUser = FIREBASE_AUTH.currentUser;
 			if (currentUser) {
-				const userDocRef = doc(FIREBASE_DB, "users", currentUser.uid);
-				const userDoc = await getDoc(userDocRef);
-				if (userDoc.exists()) {
-					setUser(userDoc.data());
-				} else {
-					console.log("No such user!");
-				}
+			  const userDocRef = doc(FIREBASE_DB, "users", currentUser.uid);
+			  const userDoc = await getDoc(userDocRef);
+			  if (userDoc.exists()) {
+				const userData = userDoc.data();
+				setCourses(userData.courses.map(courseName => ({ text: courseName, style: styles.yellowTag })));
+				setUser(userData);
+			  } else {
+				console.log("No such user!");
+			  }
 			}
-		};
+		  };
+
+		
 
 		fetchUser();
 	}, []);
 
-	const userInterests = [
-		{ text: "🎓 4th year", style: styles.yellowTag },
-		{ text: "💻 Computer Science", style: styles.yellowTag },
-		{ text: "🕹 Games", style: styles.yellowTag },
-		{ text: "🎾 Tennis", style: styles.yellowTag },
-		{ text: "👍 Looking for Friends!", style: styles.yellowTag },
-		{ text: "🎥 Movies", style: styles.yellowTag },
-	];
-
-	const userClasses = [
-		{ text: "CS 1332", style: styles.yellowTag },
-		{ text: "CS 2110", style: styles.yellowTag },
-		{ text: "CS 2340", style: styles.yellowTag },
-		{ text: "PSYC 1101", style: styles.yellowTag },
-	];
-
+	// const userInterests = [
+	// 	{ text: "🎓 4th year", style: styles.yellowTag },
+	// 	{ text: "💻 Computer Science", style: styles.yellowTag },
+	// 	{ text: "🕹 Games", style: styles.yellowTag },
+	// 	{ text: "🎾 Tennis", style: styles.yellowTag },
+	// 	{ text: "👍 Looking for Friends!", style: styles.yellowTag },
+	// 	{ text: "🎥 Movies", style: styles.yellowTag },
+	// ];
 	const navigation = useNavigation();
 
 	const handleClick = (path) => {
@@ -63,6 +60,7 @@ const ProfileScreen = () => {
 
 	return (
 		<View style={styles.container}>
+			<View style={styles.profileContainer}>
 			<View style={styles.profileHeader}>
 				<Image
 					resizeMode="cover"
@@ -74,10 +72,10 @@ const ProfileScreen = () => {
 			<Text style={styles.userName}>
 				{user ? `${user.fname} ${user.lname}` : "Loading..."}
 			</Text>
-			<Text style={styles.sectionTitle}>My Interests</Text>
-			<InterestSection interests={userInterests} />
+			{/* <Text style={styles.sectionTitle}>My Interests</Text>
+			<InterestSection interests={userInterests} /> */}
 			<Text style={styles.sectionTitle}>My Classes</Text>
-			<InterestSection interests={userClasses} />
+			<InterestSection interests={courses} />
 			<TouchableOpacity onPress={() => handleClick("Statistics")}>
 				<Text style={styles.actionText}>View User Statistics</Text>
 			</TouchableOpacity>
@@ -87,13 +85,18 @@ const ProfileScreen = () => {
 			<TouchableOpacity onPress={() => handleIconPress("Edit Profile")}>
 				<Text style={styles.actionText}>Edit Profile</Text>
 			</TouchableOpacity>
-			<NavBar />
+			</View>
+			<NavBar/>		
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		display: "flex",
+		flex: 1,
+	},
+	profileContainer: {
 		backgroundColor: "#FFF",
 		maxWidth: 480,
 		width: "100%",
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		margin: "0 auto",
 		paddingVertical: 0,
-		paddingHorizontal: 21,
+		flex:1,
 	},
 	profileHeader: {
 		width: "100%",
