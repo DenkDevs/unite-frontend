@@ -122,7 +122,6 @@ const EventScreen = ({ navigation, route }) => {
 			<NavBar />
 		</View>
 	);
->>>>>>> fe6d5c30a55bd89eebaf15ae84ee093493522811
 };
 
 const styles = StyleSheet.create({
