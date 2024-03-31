@@ -70,55 +70,6 @@ const EventScreen = ({ navigation, route }) => {
 		setIsButtonClicked(true);
 	};
 
-<<<<<<< HEAD
-  return (
-    <View style={styles.mainContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.eventTitleContainer}>
-          <Text style={styles.eventTitleText}>
-            {eventDetails ? eventDetails.title : "Loading..."}
-          </Text>
-        </View>
-        <View style={styles.graphicContainer}>
-          <Text style={styles.graphicText}>graphic for event</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => console.log("The Hive Location Clicked")}
-              title="The Hive"
-              color="#000"
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => navigation.navigate("Success")}
-              title="+ Save event to calendar"
-              color="#000"
-            />
-          </View>
-        </View>
-        <EventDetails
-          date={eventDetails ? eventDetails.time : "Loading..."}
-          location={eventDetails ? eventDetails.location : "Loading..."}
-        />
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText}>
-            {eventDetails ? eventDetails.description : "Loading..."}
-          </Text>
-        </View>
-        <View style={styles.rsvpContainer}>
-          <Button
-            onPress={() => console.log("RSVP Button Clicked")}
-            title="RSVP HERE!"
-            color="#000"
-          />
-        </View>
-      </View>
-      <NavBar />
-    </View>
-  );
-=======
 	return (
 		<View style={styles.mainContainer}>
 			<View style={styles.contentContainer}>
@@ -142,7 +93,7 @@ const EventScreen = ({ navigation, route }) => {
 					</View>
 					<View style={styles.buttonContainer}>
 						<Button
-							onPress={() => console.log("Save Event to Calendar")}
+							onPress={() => navigation.navigate("Success")}
 							title="+ Save event to calendar"
 							color="#000"
 						/>
