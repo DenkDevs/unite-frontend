@@ -7,6 +7,7 @@ import ProfileScreen from "./components/Profile";
 import StatisticsScreen from "./components/Statistics";
 import ScheduleScreen from "./components/Schedule";
 import EventScreen from "./components/Event";
+import AddEventSuccessScreen from "./components/AddEventSuccess";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
         <Stack.Screen name="Statistics" component={StatisticsScreen} />
         <Stack.Screen name="Schedule" component={ScheduleScreen} />
         <Stack.Screen name="Event" component={EventScreen} />
+        <Stack.Screen name="Success" component={AddEventSuccessScreen} />
         {/*<Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>

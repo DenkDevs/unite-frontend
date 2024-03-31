@@ -60,7 +60,7 @@ const EventScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.buttonContainer}>
             <Button
-              onPress={() => console.log("Save Event to Calendar")}
+              onPress={() => navigation.navigate("Success")}
               title="+ Save event to calendar"
               color="#000"
             />
