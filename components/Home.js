@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   ScrollView,
+  TextInput,
 } from "react-native";
 import NavBar from "./NavBar";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../FirebaseConfig";
@@ -44,6 +45,7 @@ const HomeScreen = () => {
   const [eventData, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigation = useNavigation();
   const posthog = usePostHog();
 
@@ -53,11 +55,8 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "For Me") {
-      console.log("fetching for me events");
-      fetchFilteredEvents();
-    }
-  }, [activeTab, eventData]); // Re-fetch filtered events when tab or eventData changes
+    filterEvents();
+  }, [activeTab, eventData, searchQuery]); // Re-fetch filtered events when tab or eventData changes
 
   const fetchEvents = async () => {
     try {
@@ -80,6 +79,27 @@ const HomeScreen = () => {
     posthog.capture("user_looked_at_event", { eventId });
   };
 
+  const filterEvents = async () => {
+    let results = [...eventData];
+    console.log("All events: ", eventData);
+    console.log("Active Tab: ", activeTab);
+    if (activeTab === "For Me") {
+      await fetchFilteredEvents();
+      console.log("completed for me filtering");
+      results = [...filteredEvents]; // Assuming fetchFilteredEvents sets filteredEvents
+      console.log("for me: ", results);
+    }
+    if (searchQuery) {
+      results = results.filter(
+        (event) =>
+          event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          event.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    console.log(results);
+    setFilteredEvents(results);
+  };
+
   const fetchFilteredEvents = async () => {
     console.log("Started fetching filtered events"); // Check if function starts
     const currentUser = FIREBASE_AUTH.currentUser;
@@ -98,7 +118,7 @@ const HomeScreen = () => {
           const filtered = eventData.filter((event) =>
             userEvents.includes(event.id)
           );
-          console.log("dkajwmdj,");
+          console.log(filtered);
           setFilteredEvents(filtered);
         } else {
           console.log("No such user!");
@@ -114,8 +134,8 @@ const HomeScreen = () => {
     }
   };
 
-  const displayEvents = activeTab === "All" ? eventData : filteredEvents;
-  console.log(displayEvents);
+  // const displayEvents = activeTab === "All" ? eventData : filteredEvents;
+  // console.log(displayEvents);
 
   return (
     <View style={styles.container}>
@@ -136,14 +156,17 @@ const HomeScreen = () => {
               <Text>For Me</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.searchBox}>
-            <Text>Search...</Text>
-          </View>
+          <TextInput
+            style={styles.searchBox}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search events..."
+          />
           <Text style={styles.dateHeader}>DATE</Text>
           {/* Check if eventData is not empty */}
-          {displayEvents.length > 0 ? (
+          {filteredEvents.length > 0 ? (
             // If eventData is not empty, map through it and render EventCard components
-            displayEvents.map((event, index) => (
+            filteredEvents.map((event, index) => (
               <EventCard
                 key={event.id}
                 title={event.title}
@@ -220,7 +243,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 15,
     fontWeight: "400",
-    whiteSpace: "nowrap",
     padding: 10,
   },
   dateHeader: {
