@@ -123,78 +123,80 @@ const EventScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.contentContainer}>
-        <View style={styles.eventTitleContainer}>
-          <Text style={styles.eventTitleText}>
-            {eventDetails ? eventDetails.title : "Loading..."}
-          </Text>
-        </View>
-        <View style={styles.graphicContainer}>
-          <Text style={styles.graphicText}>graphic for event</Text>
-        </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => console.log("The Location Clicked")}
-              title={
-                eventDetails ? `Go to ${eventDetails.clubName}` : "Loading..."
-              }
-              color="#000"
-            />
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.contentContainer}>
+          <View style={styles.eventTitleContainer}>
+            <Text style={styles.eventTitleText}>
+              {eventDetails ? eventDetails.title : "Loading..."}
+            </Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={() => navigation.navigate("Success")}
-              title="+ Save event to calendar"
-              color="#000"
-            />
+          <View style={styles.graphicContainer}>
+            <Text style={styles.graphicText}>graphic for event</Text>
           </View>
-        </View>
-        <EventDetails
-          date={eventDetails ? eventDetails.time : "Loading..."}
-          location={eventDetails ? eventDetails.location : "Loading..."}
-        />
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText}>
-            {eventDetails ? eventDetails.description : "Loading..."}
-          </Text>
-        </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>RSVP List</Text>
-              <ScrollView style={styles.scrollView}>
-                {rsvpList.map((userId, index) => (
-                  <Text key={index} style={styles.itemText}>
-                    {userId}
-                  </Text>
-                ))}
-              </ScrollView>
-              <Button title="Close" onPress={() => setModalVisible(false)} />
+          <View style={styles.infoContainer}>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={() => console.log("The Location Clicked")}
+                title={
+                  eventDetails ? `Go to ${eventDetails.clubName}` : "Loading..."
+                }
+                color="#000"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={() => navigation.navigate("Success")}
+                title="+ Save event to calendar"
+                color="#000"
+              />
             </View>
           </View>
-        </Modal>
-        <View style={styles.rsvpContainer}>
-          <Button
-            onPress={() => {
-              handleRSVP();
-              console.log("RSVP Button Clicked");
-            }}
-            title="RSVP HERE!"
-            color="#000"
+          <EventDetails
+            date={eventDetails ? eventDetails.time : "Loading..."}
+            location={eventDetails ? eventDetails.location : "Loading..."}
           />
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionText}>
+              {eventDetails ? eventDetails.description : "Loading..."}
+            </Text>
+          </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>RSVP List</Text>
+                <ScrollView style={styles.scrollView}>
+                  {rsvpList.map((userId, index) => (
+                    <Text key={index} style={styles.itemText}>
+                      {userId}
+                    </Text>
+                  ))}
+                </ScrollView>
+                <Button title="Close" onPress={() => setModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+          <View style={styles.rsvpContainer}>
+            <Button
+              onPress={() => {
+                handleRSVP();
+                console.log("RSVP Button Clicked");
+              }}
+              title="RSVP HERE!"
+              color="#000"
+            />
+          </View>
+          <View style={styles.rsvpListContainer}>
+            <Button onPress={viewRSVPList} title="See RSVP List" color="#000" />
+          </View>
         </View>
-        <View style={styles.rsvpListContainer}>
-          <Button onPress={viewRSVPList} title="See RSVP List" color="#000" />
-        </View>
-      </View>
+      </ScrollView>
       <NavBar />
     </View>
   );
@@ -266,6 +268,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#D9D9D9",
     padding: 10,
+    marginBottom: 10,
   },
   centeredView: {
     flex: 1,
@@ -303,6 +306,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  scrollContainer: {
+    flex: 1, // Ensures the ScrollView takes up the full space above the NavBar
   },
 });
 
