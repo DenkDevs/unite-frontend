@@ -2,7 +2,11 @@
   "expo": {
     "name": "unite-frontend",
     "slug": "unite-frontend",
+    "owner": "djliu9049890",
+    "scheme": "unite-frontend",
     "version": "1.0.0",
+    "privacy": "public",
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,9 +19,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.denkdevs.unite"
     },
     "android": {
+      "package": "com.denkdevs.unite",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

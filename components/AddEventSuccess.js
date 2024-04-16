@@ -1,5 +1,8 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import * as Google from "expo-auth-session/providers/google";
+import { CLIENT_ID } from "../GoogleAPI"; // Make sure this is correctly imported
 
 function Button({ text, onPress }) {
   return (
@@ -10,6 +13,18 @@ function Button({ text, onPress }) {
 }
 
 function AddEventSuccessScreen() {
+  const navigation = useNavigation();
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId: CLIENT_ID,
+  });
+
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      const { id_token } = response.params;
+      // Use the ID token as needed
+    }
+  }, [response]);
+
   return (
     <View style={styles.container}>
       <View style={styles.messageBox}>
@@ -21,9 +36,18 @@ function AddEventSuccessScreen() {
           {"\n"}to your calendar!
         </Text>
       </View>
-      <Button text="Go To Calendar" onPress={() => {}} />
-      <Button text="View More Events" onPress={() => {}} />
-      <Text>This page is a work in progress...</Text>
+      <Button
+        text="Go To Calendar"
+        onPress={() => {
+          promptAsync();
+        }}
+      />
+      <Button
+        text="View More Events"
+        onPress={() => {
+          navigation.navigate("Home");
+        }}
+      />
     </View>
   );
 }
@@ -44,7 +68,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     textAlign: "center",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
     fontSize: 20,
     color: "#000",
   },
@@ -62,7 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   buttonText: {
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "sans-serif",
   },
 });
 
