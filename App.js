@@ -12,6 +12,7 @@ import EventScreen from "./components/Event";
 import AddEventSuccessScreen from "./components/AddEventSuccess";
 import CourseList from "./components/CourseList";
 import MessagesScreen from "./components/Messages";
+import ChatScreen from "./components/Chat";
 import { PostHogProvider } from "posthog-react-native";
 
 const Stack = createStackNavigator();
@@ -37,6 +38,7 @@ export default function App() {
           <Stack.Screen name="Schedule" component={ScheduleScreen} />
           <Stack.Screen name="Event" component={EventScreen} />
           <Stack.Screen name="Success" component={AddEventSuccessScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen} />
           {/*<Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
         </Stack.Navigator>
       </PostHogProvider>
