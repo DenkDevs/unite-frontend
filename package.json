@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start-clear": "expo start --clear"
   },
   "dependencies": {
     "@react-native-firebase/analytics": "^19.1.1",

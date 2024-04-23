@@ -2,7 +2,9 @@ import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Google from "expo-auth-session/providers/google";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import { CLIENT_ID } from "../GoogleAPI"; // Make sure this is correctly imported
+import axios from "axios"; // Make sure axios is installed
 
 function Button({ text, onPress }) {
   return (
@@ -14,8 +16,16 @@ function Button({ text, onPress }) {
 
 function AddEventSuccessScreen() {
   const navigation = useNavigation();
+  const [accessToken, setAccessToken] = React.useState(null);
+
+  // Using makeRedirectUri with useProxy: true ensures that you use Expo’s proxy
+  const redirectUri = makeRedirectUri({
+    useProxy: true, // This ensures that the auth.expo.io is used
+  });
+
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId: CLIENT_ID,
+    redirectUri: "https://auth.expo.io/@djliu9049890/unite-frontend", // Explicitly set the redirect URI here
   });
 
   React.useEffect(() => {
@@ -23,7 +33,49 @@ function AddEventSuccessScreen() {
       const { id_token } = response.params;
       // Use the ID token as needed
     }
+    console.log(response);
+    console.log(request);
   }, [response]);
+
+  React.useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      setAccessToken(authentication.accessToken); // Store access token in state
+    }
+  }, [response]);
+
+  const addEventToGoogleCalendar = async () => {
+    if (!accessToken) {
+      Alert.alert("Error", "Must authenticate with Google first!");
+      return;
+    }
+
+    // Replace this object with your event details
+    const eventDetails = {
+      summary: "Valentine’s Day Soldering Workshop",
+      // Add more details like start and end times, location, etc.
+      // Refer to the Google Calendar API documentation for more options
+    };
+
+    try {
+      await axios.post(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+        eventDetails,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      Alert.alert("Success", "Event added to your calendar!");
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        "Error",
+        "There was an error adding the event to your calendar."
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
