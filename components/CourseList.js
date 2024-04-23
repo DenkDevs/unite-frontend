@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../FirebaseConfig";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc, getDoc, setDoc, arrayUnion } from "firebase/firestore";
 
 import axios from "axios";
 
@@ -25,9 +25,39 @@ const CourseList = () => {
 	const handleUpdateCourses = async () => {
 		if (auth.currentUser) {
 			const userDoc = doc(db, "users", auth.currentUser.uid);
+			const formattedCourses = selectedCourses.map((course) =>
+				course.replace(/ /g, "_")
+			);
+
+			for (let courseId of formattedCourses) {
+				const chatDocRef = doc(db, "chats", courseId);
+				const chatDoc = await getDoc(chatDocRef);
+
+				if (chatDoc.exists()) {
+					// If the chat already exists, add the user to the member list
+					await updateDoc(chatDocRef, {
+						members: arrayUnion(auth.currentUser.uid),
+					});
+				} else {
+					// If the chat does not exist, create it and add the user to the member list
+					await setDoc(chatDocRef, {
+						chatId: courseId,
+						chatTitle: courseId.replace(/_/g, " "),
+						chatType: "course",
+						members: [auth.currentUser.uid],
+						recentMessages: {
+							messageText: "",
+							sentAt: new Date(),
+							sentBy: "system",
+						},
+					});
+				}
+			}
+
 			await updateDoc(userDoc, {
-				courses: arrayUnion(...selectedCourses),
-				hasLoggedInBefore: true, // Add this line
+				chats: arrayUnion(...formattedCourses),
+				courses: selectedCourses,
+				hasLoggedInBefore: true,
 			});
 		} else {
 			console.log("No user is logged in");
