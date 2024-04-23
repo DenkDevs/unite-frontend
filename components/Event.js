@@ -145,7 +145,7 @@ const EventScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                onPress={() => navigation.navigate("Success")}
+                onPress={() => navigation.navigate("Success", { eventId })}
                 title="+ Save event to calendar"
                 color="#000"
               />

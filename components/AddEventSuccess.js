@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import {
+  CLIENT_ID,
+  ANDROID_CLIENT_ID,
+  API_KEY,
+  DISCOVERY_DOC,
+  SCOPES,
+  IOS_CLIENT_ID,
+} from "../GoogleAPI"; // Make sure this is correctly imported
 import * as Google from "expo-auth-session/providers/google";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
-import { CLIENT_ID } from "../GoogleAPI"; // Make sure this is correctly imported
-import axios from "axios"; // Make sure axios is installed
+import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import useParseDateForGoogleCalendar from "./DateForGoogleCalendar";
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_DB } from "../FirebaseConfig";
 
+WebBrowser.maybeCompleteAuthSession();
 function Button({ text, onPress }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
@@ -14,68 +25,112 @@ function Button({ text, onPress }) {
   );
 }
 
-function AddEventSuccessScreen() {
-  const navigation = useNavigation();
-  const [accessToken, setAccessToken] = React.useState(null);
-
-  // Using makeRedirectUri with useProxy: true ensures that you use Expo’s proxy
-  const redirectUri = makeRedirectUri({
-    useProxy: true, // This ensures that the auth.expo.io is used
+const AddEventSuccessScreen = ({ navigation, route }) => {
+  const { eventId } = route.params;
+  const [eventDetails, setEventDetails] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: ANDROID_CLIENT_ID,
+    iosClientId: IOS_CLIENT_ID,
+    scopes: SCOPES,
   });
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: CLIENT_ID,
-    redirectUri: "https://auth.expo.io/@djliu9049890/unite-frontend", // Explicitly set the redirect URI here
-  });
-
-  React.useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      // Use the ID token as needed
+  async function handleSignInWithGoogle() {
+    const user = await AsyncStorage.getItem("@user");
+    if (!user) {
+      console.log("!user");
+      if (response?.type === "success") {
+        console.log("success");
+        await getUserInfo(response.authentication.accessToken);
+        console.log("getuserinfo finished");
+        await addEventToGoogleCalendar(response.authentication.accessToken);
+        console.log("finished adding event to calendar");
+      }
+    } else {
+      console.log("user");
+      setUserInfo(JSON.parse(user));
+      await addEventToGoogleCalendar(response.authentication.accessToken);
+      console.log("finished adding event to calendar");
     }
-    console.log(response);
-    console.log(request);
-  }, [response]);
+  }
 
-  React.useEffect(() => {
-    if (response?.type === "success") {
-      const { authentication } = response;
-      setAccessToken(authentication.accessToken); // Store access token in state
+  const getUserInfo = async (token) => {
+    if (!token) return;
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const user = await response.json();
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+      console.log("successfully retrieved userinfo");
+    } catch (error) {
+      console.log("daknda");
+      console.log(error);
     }
-  }, [response]);
+  };
 
-  const addEventToGoogleCalendar = async () => {
-    if (!accessToken) {
-      Alert.alert("Error", "Must authenticate with Google first!");
-      return;
+  const fetchEventDetails = async () => {
+    try {
+      const eventDocRef = doc(FIREBASE_DB, "events", eventId.toString());
+      const eventDocSnap = await getDoc(eventDocRef);
+      if (eventDocSnap.exists()) {
+        const eventData = eventDocSnap.data();
+        setEventDetails(eventData);
+      } else {
+        console.error("Event not found");
+      }
+    } catch (error) {
+      console.error("Error fetching event details:", error);
     }
+  };
 
-    // Replace this object with your event details
-    const eventDetails = {
-      summary: "Valentine’s Day Soldering Workshop",
-      // Add more details like start and end times, location, etc.
-      // Refer to the Google Calendar API documentation for more options
+  const addEventToGoogleCalendar = async (accessToken) => {
+    console.log("enter add event function");
+    await fetchEventDetails();
+    console.log(eventDetails);
+    const { startDateTime, endDateTime } = useParseDateForGoogleCalendar(
+      eventDetails.time
+    );
+    console.log(startDateTime);
+    console.log(endDateTime);
+    const event = {
+      summary: eventDetails.title,
+      location: eventDetails.location,
+      description: eventDetails.description,
+      start: {
+        dateTime: startDateTime,
+        timeZone: "America/Los_Angeles",
+      },
+      end: {
+        dateTime: endDateTime,
+        timeZone: "America/Los_Angeles",
+      },
     };
 
     try {
-      await axios.post(
+      const response = await fetch(
         "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-        eventDetails,
         {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify(event),
         }
       );
-      Alert.alert("Success", "Event added to your calendar!");
+      const result = await response.json();
+      console.log("Event added:", result);
     } catch (error) {
-      console.error(error);
-      Alert.alert(
-        "Error",
-        "There was an error adding the event to your calendar."
-      );
+      console.log("Error adding event to Google Calendar:", error);
     }
   };
+
+  React.useEffect(() => {
+    handleSignInWithGoogle();
+  }, [response]);
 
   return (
     <View style={styles.container}>
@@ -92,6 +147,8 @@ function AddEventSuccessScreen() {
         text="Go To Calendar"
         onPress={() => {
           promptAsync();
+          console.log("complete");
+          console.log(userInfo);
         }}
       />
       <Button
@@ -102,7 +159,7 @@ function AddEventSuccessScreen() {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

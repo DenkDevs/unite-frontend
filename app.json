@@ -6,7 +6,11 @@
     "scheme": "unite-frontend",
     "version": "1.0.0",
     "privacy": "public",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,14 +24,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.denkdevs.unite"
+      "bundleIdentifier": "com.djliu9049890.unitefrontend"
     },
     "android": {
-      "package": "com.denkdevs.unite",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.djliu9049890.unitefrontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
