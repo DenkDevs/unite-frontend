@@ -81,13 +81,13 @@ const HomeScreen = () => {
 
   const filterEvents = async () => {
     let results = [...eventData];
-    console.log("All events: ", eventData);
-    console.log("Active Tab: ", activeTab);
+    // console.log("All events: ", eventData);
+    // console.log("Active Tab: ", activeTab);
     if (activeTab === "For Me") {
       await fetchFilteredEvents();
-      console.log("completed for me filtering");
+      // console.log("completed for me filtering");
       results = [...filteredEvents]; // Assuming fetchFilteredEvents sets filteredEvents
-      console.log("for me: ", results);
+      // console.log("for me: ", results);
     }
     if (searchQuery) {
       results = results.filter(
@@ -96,7 +96,7 @@ const HomeScreen = () => {
           event.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    console.log(results);
+    //console.log(results);
     setFilteredEvents(results);
   };
 
@@ -113,12 +113,12 @@ const HomeScreen = () => {
           const userData = userDoc.data();
           console.log("User Data:", userData); // Log user data to check structure
           const userEvents = userData.rsvpEvents;
-          console.log("adwaldkn");
-          console.log(userEvents);
+          // console.log("adwaldkn");
+          // console.log(userEvents);
           const filtered = eventData.filter((event) =>
             userEvents.includes(event.id)
           );
-          console.log(filtered);
+          // console.log(filtered);
           setFilteredEvents(filtered);
         } else {
           console.log("No such user!");

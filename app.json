@@ -2,7 +2,6 @@
   "expo": {
     "name": "unite-frontend",
     "slug": "unite-frontend",
-    "owner": "djliu9049890",
     "scheme": "unite-frontend",
     "version": "1.0.0",
     "privacy": "public",
@@ -38,6 +37,11 @@
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2fa29afc-167e-4d8d-b37f-4178b700d416"
+      }
+    }
   }
 }

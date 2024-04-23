@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     marginHorizontal: 5,
+    backgroundColor: "#9e9b9b",
   },
   detailsContainer: {
     marginTop: 30,
