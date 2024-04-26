@@ -27,19 +27,22 @@ const ProfileScreen = () => {
 		const fetchUser = async () => {
 			const currentUser = FIREBASE_AUTH.currentUser;
 			if (currentUser) {
-			  const userDocRef = doc(FIREBASE_DB, "users", currentUser.uid);
-			  const userDoc = await getDoc(userDocRef);
-			  if (userDoc.exists()) {
-				const userData = userDoc.data();
-				setCourses(userData.courses.map(courseName => ({ text: courseName, style: styles.yellowTag })));
-				setUser(userData);
-			  } else {
-				console.log("No such user!");
-			  }
+				const userDocRef = doc(FIREBASE_DB, "users", currentUser.uid);
+				const userDoc = await getDoc(userDocRef);
+				if (userDoc.exists()) {
+					const userData = userDoc.data();
+					setCourses(
+						userData.courses.map((courseName) => ({
+							text: courseName,
+							style: styles.yellowTag,
+						}))
+					);
+					setUser(userData);
+				} else {
+					console.log("No such user!");
+				}
 			}
-		  };
-
-		
+		};
 
 		fetchUser();
 	}, []);
@@ -61,32 +64,32 @@ const ProfileScreen = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.profileContainer}>
-			<View style={styles.profileHeader}>
-				<Image
-					resizeMode="cover"
-					source={{ uri: "{{placeholder}}" }}
-					style={styles.profileImage}
-				/>
-			</View>
-			<View style={styles.avatarPlaceholder} />
-			<Text style={styles.userName}>
-				{user ? `${user.fname} ${user.lname}` : "Loading..."}
-			</Text>
-			{/* <Text style={styles.sectionTitle}>My Interests</Text>
+				<View style={styles.profileHeader}>
+					<Image
+						resizeMode="cover"
+						source={{ uri: "{{placeholder}}" }}
+						style={styles.profileImage}
+					/>
+				</View>
+				<View style={styles.avatarPlaceholder} />
+				<Text style={styles.userName}>
+					{user ? `${user.fname} ${user.lname}` : "Loading..."}
+				</Text>
+				{/* <Text style={styles.sectionTitle}>My Interests</Text>
 			<InterestSection interests={userInterests} /> */}
-			<Text style={styles.sectionTitle}>My Classes</Text>
-			<InterestSection interests={courses} />
-			<TouchableOpacity onPress={() => handleClick("Statistics")}>
-				<Text style={styles.actionText}>View User Statistics</Text>
-			</TouchableOpacity>
-			<TouchableOpacity onPress={() => handleClick("Schedule")}>
-				<Text style={styles.actionText}>Course Schedule</Text>
-			</TouchableOpacity>
-			<TouchableOpacity onPress={() => handleIconPress("Edit Profile")}>
+				<Text style={styles.sectionTitle}>My Classes</Text>
+				<InterestSection interests={courses} />
+				<TouchableOpacity onPress={() => handleClick("Statistics")}>
+					<Text style={styles.actionText}>View User Statistics</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => handleClick("Schedule")}>
+					<Text style={styles.actionText}>Course Schedule</Text>
+				</TouchableOpacity>
+				{/* <TouchableOpacity onPress={() => handleIconPress("Edit Profile")}>
 				<Text style={styles.actionText}>Edit Profile</Text>
-			</TouchableOpacity>
+			</TouchableOpacity> */}
 			</View>
-			<NavBar/>		
+			<NavBar />
 		</View>
 	);
 };
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		margin: "0 auto",
 		paddingVertical: 0,
-		flex:1,
+		flex: 1,
 	},
 	profileHeader: {
 		width: "100%",

@@ -13,20 +13,21 @@ const NavBar = () => {
 
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity
-				onPress={() => handleIconPress("Home")}
-				style={styles.iconButton}>
-				<Ionicons name="home-outline" size={30} color="black" />
-			</TouchableOpacity>
-			<TouchableOpacity
+			{/* <TouchableOpacity
 				onPress={() => handleIconPress("Calendar")}
 				style={styles.iconButton}>
 				<Ionicons name="calendar-outline" size={30} color="black" />
-			</TouchableOpacity>
+			</TouchableOpacity> */}
+
 			<TouchableOpacity
 				onPress={() => handleIconPress("Messages")}
 				style={styles.iconButton}>
 				<Ionicons name="chatbox-outline" size={30} color="black" />
+			</TouchableOpacity>
+			<TouchableOpacity
+				onPress={() => handleIconPress("Home")}
+				style={styles.iconButton}>
+				<Ionicons name="home-outline" size={30} color="black" />
 			</TouchableOpacity>
 			<TouchableOpacity
 				onPress={() => handleIconPress("Profile")}
